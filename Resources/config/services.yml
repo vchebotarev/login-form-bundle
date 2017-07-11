@@ -1,0 +1,15 @@
+
+services:
+
+    chebur.login_form.authentication.listener:
+        class: Chebur\LoginFormBundle\Security\Http\Firewall\LoginFormAuthenticationListener
+        parent: 'security.authentication.listener.abstract'
+        public: false
+        abstract: true
+
+    chebur.login_form.form.helper:
+        class: Chebur\LoginFormBundle\Security\Form\LoginFormHelper
+        arguments:
+            - '@security.authentication_utils'
+            - '@chebur.login_form.form.registry'
+            - '%chebur.login_form.security.config%'
