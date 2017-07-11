@@ -25,7 +25,6 @@ class LoginFormException extends AuthenticationException
                 if ($error instanceof FormErrorIterator) {
                     $errorsArray[$error->getForm()->getName()] = $toArray($error);
                 } else {
-                    //$errorsArray[] = $error;//todo не может отсериализовать ошибки - косяк Symfony
                     $errorsArray[] = $error->getMessage();
                 }
             }

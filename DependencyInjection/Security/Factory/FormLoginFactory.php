@@ -3,7 +3,6 @@
 namespace Chebur\LoginFormBundle\DependencyInjection\Security\Factory;
 
 use Chebur\LoginFormBundle\Security\Form\LoginFormRegistry;
-use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\AbstractFactory;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\FormLoginFactory as BaseFormLoginFactory;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -22,9 +21,6 @@ class FormLoginFactory extends BaseFormLoginFactory
         unset($this->options['csrf_token_id']);
         unset($this->options['post_only']);
         unset($this->options['csrf_token_generator']);
-
-        //todo remove csrf_token_generator
-        //todo options 'hide_user_not_found' 'user_checker'
     }
 
     /**
@@ -53,6 +49,9 @@ class FormLoginFactory extends BaseFormLoginFactory
                         ->thenInvalid('Login FormType class does not exist')
                     ->end()
                 ->end()
+                ->booleanNode('hide_user_not_found')
+                    ->defaultValue(true)
+                ->end()
             ->end()
         ;
     }
@@ -77,6 +76,18 @@ class FormLoginFactory extends BaseFormLoginFactory
     public function getListenerId() : string
     {
         return 'chebur.login_form.authentication.listener';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function createAuthProvider(ContainerBuilder $container, $id, $config, $userProviderId)
+    {
+        $daoProviderId = parent::createAuthProvider($container, $id, $config, $userProviderId);
+
+        $container->getDefinition($daoProviderId)->replaceArgument(4, $config['hide_user_not_found']);
+
+        return $daoProviderId;
     }
 
     /**

@@ -38,7 +38,7 @@ class LoginFormAuthenticationListener extends AbstractAuthenticationListener
      * @param array                                  $options
      * @param LoggerInterface                        $logger
      * @param EventDispatcherInterface               $dispatcher
-     * @param CsrfTokenManager                       $csrfTokenManager todo избавиться
+     * @param CsrfTokenManager                       $csrfTokenManager
      * @param FormInterface                          $form
      */
     public function __construct(
@@ -87,14 +87,14 @@ class LoginFormAuthenticationListener extends AbstractAuthenticationListener
             $formData = $form->getData() ? : array();
         } else {
             $exception = new LoginFormException();
-            $exception->setErrors($form->getErrors(true, false)); //todo test
+            $exception->setErrors($form->getErrors(true, false));
             throw $exception;
         }
 
         $username = $formData[$this->options['username_parameter']];
         $password = $formData[$this->options['password_parameter']];
 
-        if (strlen($username) > Security::MAX_USERNAME_LENGTH) { //На случай если не будут валидировать
+        if (strlen($username) > Security::MAX_USERNAME_LENGTH) {
             throw new BadCredentialsException('Invalid username.');
         }
 
