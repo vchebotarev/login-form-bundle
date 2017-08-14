@@ -101,7 +101,7 @@ class LoginFormHelper
      * @param AuthenticationException $exception
      * @param string                  $firewallName
      */
-    protected function setAuthError(FormInterface $form, AuthenticationException $exception, string $firewallName)
+    protected function setAuthError(FormInterface $form, AuthenticationException $exception, $firewallName)
     {
         $formError = new FormError($this->translator->trans($exception->getMessageKey(), [], 'security'));
 

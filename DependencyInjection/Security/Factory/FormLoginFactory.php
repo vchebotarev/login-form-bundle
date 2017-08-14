@@ -26,7 +26,7 @@ class FormLoginFactory extends BaseFormLoginFactory
     /**
      * @inheritdoc
      */
-    public function getKey() : string
+    public function getKey()
     {
         return 'chebur-form-login';
     }
@@ -73,7 +73,7 @@ class FormLoginFactory extends BaseFormLoginFactory
     /**
      * @inheritdoc
      */
-    public function getListenerId() : string
+    public function getListenerId()
     {
         return 'chebur.login_form.authentication.listener';
     }
@@ -97,7 +97,7 @@ class FormLoginFactory extends BaseFormLoginFactory
      * @param string           $listenerId
      * @return string
      */
-    protected function createLoginForm(ContainerBuilder $container, array $config, string $firewallName, string $listenerId) : string
+    protected function createLoginForm(ContainerBuilder $container, array $config, $firewallName, $listenerId)
     {
         $loginFromId = 'chebur.login_form.security.form.' . $firewallName;
         $container->setDefinition($loginFromId, new Definition(Form::class))
@@ -132,7 +132,7 @@ class FormLoginFactory extends BaseFormLoginFactory
      * @param array            $config
      * @param string           $firewallName
      */
-    protected function addContainerParameters(ContainerBuilder $container, array $config, string $firewallName)
+    protected function addContainerParameters(ContainerBuilder $container, array $config, $firewallName)
     {
         $paramName = 'chebur.login_form.security.config';
         if ($container->hasParameter($paramName)) {

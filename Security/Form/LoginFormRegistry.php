@@ -16,7 +16,7 @@ class LoginFormRegistry
      * @param string $firewallName
      * @return $this
      */
-    public function add(Form $form, string $firewallName)
+    public function add(Form $form, $firewallName)
     {
         $this->forms[$firewallName] = $form;
         return $this;
@@ -26,7 +26,7 @@ class LoginFormRegistry
      * @param string $firewallName
      * @return null|Form
      */
-    public function getByFirewallName(string $firewallName)
+    public function getByFirewallName($firewallName)
     {
         if (!isset($this->forms[$firewallName])) {
             return null;
