@@ -3,6 +3,7 @@
 namespace Chebur\LoginFormBundle\Security\Form;
 
 use Chebur\LoginFormBundle\Security\Exception\LoginFormException;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Security\Core\Exception\AccountStatusException;
@@ -32,20 +33,36 @@ class LoginFormHelper
     /**
      * @var array
      */
-    protected $formLoginConfig;
+    protected $loginFormConfig;
 
     /**
-     * @param AuthenticationUtils $authUtils
-     * @param LoginFormRegistry   $loginFormRegistry
-     * @param TranslatorInterface $translator
-     * @param array               $formLoginConfig
+     * @param AuthenticationUtils    $authUtils
+     * @param TranslatorInterface    $translator
      */
-    public function __construct(AuthenticationUtils $authUtils, LoginFormRegistry $loginFormRegistry, TranslatorInterface $translator, array $formLoginConfig)
+    public function __construct(AuthenticationUtils $authUtils, TranslatorInterface $translator)
     {
         $this->authUtils         = $authUtils;
-        $this->loginFormRegistry = $loginFormRegistry;
         $this->translator        = $translator;
-        $this->formLoginConfig   = $formLoginConfig;
+    }
+
+    /**
+     * @param LoginFormRegistry $loginFormRegistry
+     * @return $this
+     */
+    public function setLoginFormRegistry(LoginFormRegistry $loginFormRegistry)
+    {
+        $this->loginFormRegistry = $loginFormRegistry;
+        return $this;
+    }
+
+    /**
+     * @param array $config
+     * @return $this
+     */
+    public function setLoginFormConfig(array $config)
+    {
+        $this->loginFormConfig = $config;
+        return $this;
     }
 
     /**
@@ -54,6 +71,9 @@ class LoginFormHelper
      */
     public function getLoginForm($firewallName)
     {
+        if (!$this->loginFormRegistry) {
+            throw new \RuntimeException('No login form was configured');
+        }
         $form = $this->loginFormRegistry->getByFirewallName($firewallName);
         if (!$form) {
             throw new \RuntimeException('Login form for firewall `'.$firewallName.'` does not exist');
@@ -68,6 +88,9 @@ class LoginFormHelper
             } else {
                 $this->setAuthError($form, $lastAuthException, $firewallName);
             }
+            //Set form submitted true
+            $closure = \Closure::bind(function (Form $form){ $form->submitted = true; }, null, Form::class);
+            $closure($form);
         }
 
         return $form;
@@ -85,11 +108,11 @@ class LoginFormHelper
         switch (true) {
             case $exception instanceof AccountStatusException:
             case $exception instanceof UsernameNotFoundException:
-                $usernameParameter = $this->formLoginConfig[$firewallName]['username_parameter'];
+                $usernameParameter = $this->loginFormConfig[$firewallName]['username_parameter'];
                 $form->get($usernameParameter)->addError($formError);
                 break;
             case $exception instanceof BadCredentialsException:
-                $passwordParameter = $this->formLoginConfig[$firewallName]['username_parameter'];
+                $passwordParameter = $this->loginFormConfig[$firewallName]['username_parameter'];
                 $form->get($passwordParameter)->addError($formError);
                 break;
             default:
@@ -123,7 +146,7 @@ class LoginFormHelper
     protected function setLastUsername(FormInterface $form, $firewallName)
     {
         $username          = $this->authUtils->getLastUsername();
-        $usernameParameter = $this->formLoginConfig[$firewallName]['username_parameter'];
+        $usernameParameter = $this->loginFormConfig[$firewallName]['username_parameter'];
         if ($username) {
             $form->get($usernameParameter)->setData($username);
         }

@@ -11,6 +11,4 @@ services:
         class: Chebur\LoginFormBundle\Security\Form\LoginFormHelper
         arguments:
             - '@security.authentication_utils'
-            - '@chebur.login_form.form.registry'
             - '@translator'
-            - '%chebur.login_form.security.config%'

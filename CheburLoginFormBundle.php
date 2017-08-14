@@ -2,6 +2,7 @@
 
 namespace Chebur\LoginFormBundle;
 
+use Chebur\LoginFormBundle\DependencyInjection\CompilerPass\LoginFormHelperCompilerPass;
 use Chebur\LoginFormBundle\DependencyInjection\Security\Factory\FormLoginFactory;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -19,6 +20,8 @@ class CheburLoginFormBundle extends Bundle
         /** @var $extension SecurityExtension */
         $extension = $container->getExtension('security');
         $extension->addSecurityListenerFactory(new FormLoginFactory);
+
+        $container->addCompilerPass(new LoginFormHelperCompilerPass());
     }
 
 }
