@@ -20,8 +20,7 @@
         }
     ],
     "require": {
-        "php": "~7.0",
-        "symfony/symfony": "~3.3"
+
     },
     "autoload": {
         "psr-4": { "Chebur\\LoginFormBundle\\": "" }
