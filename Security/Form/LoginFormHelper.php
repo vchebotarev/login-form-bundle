@@ -117,7 +117,7 @@ class LoginFormHelper
                 $form->get($usernameParameter)->addError($formError);
                 break;
             case $exception instanceof BadCredentialsException:
-                $passwordParameter = $this->loginFormConfig[$firewallName]['username_parameter'];
+                $passwordParameter = $this->loginFormConfig[$firewallName]['password_parameter'];
                 $form->get($passwordParameter)->addError($formError);
                 break;
             default:

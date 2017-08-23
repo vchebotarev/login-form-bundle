@@ -1,6 +1,8 @@
 
-services:
+parameters:
+    chebur.login_form.form.helper.class: Chebur\LoginFormBundle\Security\Form\LoginFormHelper
 
+services:
     chebur.login_form.authentication.listener:
         class: Chebur\LoginFormBundle\Security\Http\Firewall\LoginFormAuthenticationListener
         parent: 'security.authentication.listener.abstract'
@@ -8,7 +10,7 @@ services:
         abstract: true
 
     chebur.login_form.form.helper:
-        class: Chebur\LoginFormBundle\Security\Form\LoginFormHelper
+        class: '%chebur.login_form.form.helper.class%'
         arguments:
             - '@security.authentication_utils'
             - '@translator'
