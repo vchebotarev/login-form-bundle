@@ -36,13 +36,13 @@ class LoginFormHelper
     protected $loginFormConfig;
 
     /**
-     * @param AuthenticationUtils    $authUtils
-     * @param TranslatorInterface    $translator
+     * @param AuthenticationUtils $authUtils
+     * @param TranslatorInterface $translator
      */
     public function __construct(AuthenticationUtils $authUtils, TranslatorInterface $translator)
     {
-        $this->authUtils         = $authUtils;
-        $this->translator        = $translator;
+        $this->authUtils  = $authUtils;
+        $this->translator = $translator;
     }
 
     /**
@@ -81,10 +81,10 @@ class LoginFormHelper
 
         $this->setLastUsername($form, $firewallName);
 
-        $lastAuthException  = $this->authUtils->getLastAuthenticationError();
+        $lastAuthException = $this->authUtils->getLastAuthenticationError();
         if ($lastAuthException) {
             if ($lastAuthException instanceof LoginFormException) {
-                $this->setLoginFormErrors($form , $lastAuthException);
+                $this->setLoginFormErrors($form, $lastAuthException);
             } else {
                 $this->setAuthError($form, $lastAuthException, $firewallName);
             }
@@ -108,7 +108,7 @@ class LoginFormHelper
      */
     protected function setAuthError(FormInterface $form, AuthenticationException $exception, $firewallName)
     {
-        $formError = new FormError($this->translator->trans($exception->getMessageKey(), [], 'security'));
+        $formError = $this->createFormError($exception, $firewallName);
 
         switch (true) {
             case $exception instanceof AccountStatusException:
@@ -126,12 +126,22 @@ class LoginFormHelper
     }
 
     /**
+     * @param AuthenticationException $exception
+     * @param string                  $firewallName
+     * @return FormError
+     */
+    protected function createFormError(AuthenticationException $exception, $firewallName)
+    {
+        return new FormError($this->translator->trans($exception->getMessageKey(), [], 'security'));
+    }
+
+    /**
      * @param FormInterface      $form
      * @param LoginFormException $exception
      */
     protected function setLoginFormErrors(FormInterface $form, LoginFormException $exception)
     {
-        $setter = function(FormInterface $form, $errors) use (&$setter){
+        $setter = function (FormInterface $form, $errors) use (&$setter) {
             foreach ($errors as $k => $error) {
                 if (is_array($error)) {
                     $setter($form->get($k), $error);
