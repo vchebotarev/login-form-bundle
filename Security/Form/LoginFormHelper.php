@@ -89,7 +89,12 @@ class LoginFormHelper
                 $this->setAuthError($form, $lastAuthException, $firewallName);
             }
             //Set form submitted true
-            $closure = \Closure::bind(function (Form $form){ $form->submitted = true; }, null, Form::class);
+            $closure = \Closure::bind(function (Form $form) use (&$closure) {
+                $form->submitted = true;
+                foreach ($form->children as $child) {
+                    $closure($child);
+                }
+            }, null, Form::class);
             $closure($form);
         }
 
