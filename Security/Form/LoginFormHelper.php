@@ -79,6 +79,8 @@ class LoginFormHelper
             throw new \RuntimeException('Login form for firewall `'.$firewallName.'` does not exist');
         }
 
+        $this->setLastUsername($form, $firewallName);
+
         $lastAuthException = $this->authUtils->getLastAuthenticationError();
         if ($lastAuthException) {
             if ($lastAuthException instanceof LoginFormException) {
@@ -95,8 +97,6 @@ class LoginFormHelper
             }, null, Form::class);
             $closure($form);
         }
-
-        $this->setLastUsername($form, $firewallName);
 
         return $form;
     }
@@ -163,10 +163,7 @@ class LoginFormHelper
         $username          = $this->authUtils->getLastUsername();
         $usernameParameter = $this->loginFormConfig[$firewallName]['username_parameter'];
         if ($username) {
-            $formElement = $form->get($usernameParameter);
-            if ($formElement->isSubmitted() && $formElement->isValid()) {
-                $formElement->setData($username);
-            }
+            $form->get($usernameParameter)->setData($username);
         }
     }
 
