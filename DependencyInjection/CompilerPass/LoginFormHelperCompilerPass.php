@@ -13,11 +13,17 @@ class LoginFormHelperCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
+        //todo сделать практически все здесь, оставив в фабрике минимум
+
         $helperDef = $container->getDefinition('chebur.login_form.form.helper');
 
-        if ($container->hasDefinition('chebur.login_form.form.registry')) {
-            $helperDef->addMethodCall('setLoginFormRegistry', [new Reference('chebur.login_form.form.registry')]);
-            $helperDef->addMethodCall('setLoginFormConfig', [$container->getParameter('chebur.login_form.security.config')]);
+        if ($container->hasDefinition('chebur.login_form.form.factory')) {
+            $config = $container->getParameter('chebur.login_form.security.config');
+
+            $helperDef->addArgument(new Reference('chebur.login_form.form.factory'));
+            $helperDef->addArgument($config);
+
+            $container->getDefinition('chebur.login_form.form.factory')->addArgument($config);
         }
     }
 

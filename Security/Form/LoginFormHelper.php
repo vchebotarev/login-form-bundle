@@ -21,9 +21,9 @@ class LoginFormHelper
     protected $authUtils;
 
     /**
-     * @var LoginFormRegistry
+     * @var LoginFormFactory
      */
-    protected $loginFormRegistry;
+    protected $loginFormFactory;
 
     /**
      * @var TranslatorInterface
@@ -36,33 +36,21 @@ class LoginFormHelper
     protected $loginFormConfig;
 
     /**
-     * @param AuthenticationUtils $authUtils
-     * @param TranslatorInterface $translator
+     * @param AuthenticationUtils   $authUtils
+     * @param TranslatorInterface   $translator
+     * @param LoginFormFactory|null $loginFormFactory
+     * @param array|null            $config
      */
-    public function __construct(AuthenticationUtils $authUtils, TranslatorInterface $translator)
-    {
+    public function __construct(
+        AuthenticationUtils $authUtils,
+        TranslatorInterface $translator,
+        LoginFormFactory $loginFormFactory = null,
+        array $config = null
+    ) {
         $this->authUtils  = $authUtils;
         $this->translator = $translator;
-    }
-
-    /**
-     * @param LoginFormRegistry $loginFormRegistry
-     * @return $this
-     */
-    public function setLoginFormRegistry(LoginFormRegistry $loginFormRegistry)
-    {
-        $this->loginFormRegistry = $loginFormRegistry;
-        return $this;
-    }
-
-    /**
-     * @param array $config
-     * @return $this
-     */
-    public function setLoginFormConfig(array $config)
-    {
+        $this->loginFormFactory = $loginFormFactory;
         $this->loginFormConfig = $config;
-        return $this;
     }
 
     /**
@@ -71,10 +59,10 @@ class LoginFormHelper
      */
     public function getLoginForm($firewallName)
     {
-        if (!$this->loginFormRegistry) {
+        if (!$this->loginFormFactory) {
             throw new \RuntimeException('No login form was configured');
         }
-        $form = $this->loginFormRegistry->getByFirewallName($firewallName);
+        $form = $this->loginFormFactory->createForm($firewallName);
         if (!$form) {
             throw new \RuntimeException('Login form for firewall `'.$firewallName.'` does not exist');
         }
