@@ -48,9 +48,6 @@ class FormLoginFactory extends BaseFormLoginFactory
                         ->thenInvalid('Login FormType class does not exist')
                     ->end()
                 ->end()
-                ->booleanNode('hide_user_not_found')
-                    ->defaultValue(true)
-                ->end()
             ->end()
         ;
     }
@@ -75,18 +72,6 @@ class FormLoginFactory extends BaseFormLoginFactory
     public function getListenerId()
     {
         return 'chebur.login_form.authentication.listener';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function createAuthProvider(ContainerBuilder $container, $id, $config, $userProviderId)
-    {
-        $daoProviderId = parent::createAuthProvider($container, $id, $config, $userProviderId);
-
-        $container->getDefinition($daoProviderId)->replaceArgument(4, $config['hide_user_not_found']);
-
-        return $daoProviderId;
     }
 
     /**
