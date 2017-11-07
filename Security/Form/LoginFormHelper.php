@@ -132,7 +132,7 @@ class LoginFormHelper
      */
     protected function createFormError(AuthenticationException $exception, $firewallName)
     {
-        return new FormError($this->translator->trans($exception->getMessageKey(), [], 'security'));
+        return new FormError($this->translator->trans($exception->getMessageKey(), $exception->getMessageData(), 'security'));
     }
 
     /**
