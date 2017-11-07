@@ -3,9 +3,9 @@
 namespace Chebur\LoginFormBundle\Security\Http\Firewall;
 
 use Chebur\LoginFormBundle\Security\Exception\LoginFormException;
+use Chebur\LoginFormBundle\Security\Form\LoginFormFactory;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
@@ -23,9 +23,9 @@ use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategyInterfa
 class LoginFormAuthenticationListener extends AbstractAuthenticationListener
 {
     /**
-     * @var FormInterface
+     * @var LoginFormFactory
      */
-    protected $form;
+    protected $loginFormFactory;
 
     /**
      * @param TokenStorageInterface                  $tokenStorage
@@ -39,7 +39,7 @@ class LoginFormAuthenticationListener extends AbstractAuthenticationListener
      * @param LoggerInterface                        $logger
      * @param EventDispatcherInterface               $dispatcher
      * @param CsrfTokenManager                       $csrfTokenManager
-     * @param FormInterface                          $form
+     * @param LoginFormFactory                       $loginFormFactory
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
@@ -53,7 +53,7 @@ class LoginFormAuthenticationListener extends AbstractAuthenticationListener
         LoggerInterface $logger,
         EventDispatcherInterface $dispatcher,
         $csrfTokenManager,
-        FormInterface $form = null
+        LoginFormFactory $loginFormFactory
     ) {
         parent::__construct(
             $tokenStorage,
@@ -67,7 +67,7 @@ class LoginFormAuthenticationListener extends AbstractAuthenticationListener
             $logger,
             $dispatcher
         );
-        $this->form = $form;
+        $this->loginFormFactory = $loginFormFactory;
     }
 
     /**
@@ -75,9 +75,8 @@ class LoginFormAuthenticationListener extends AbstractAuthenticationListener
      */
     protected function attemptAuthentication(Request $request)
     {
-        $form = $this->form;
-
-        $this->form->handleRequest($request);
+        $form = $this->loginFormFactory->createForm($this->providerKey);
+        $form->handleRequest($request);
 
         if (!$form->isSubmitted()) {
             return new RedirectResponse($this->options['login_path']);
@@ -95,7 +94,7 @@ class LoginFormAuthenticationListener extends AbstractAuthenticationListener
         $password = $formData[$this->options['password_parameter']];
 
         if (strlen($username) > Security::MAX_USERNAME_LENGTH) {
-            throw new BadCredentialsException('Invalid username.');
+            throw new BadCredentialsException();
         }
 
         $request->getSession()->set(Security::LAST_USERNAME, $username);

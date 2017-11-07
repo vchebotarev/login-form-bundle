@@ -2,13 +2,12 @@
 
 namespace Chebur\LoginFormBundle\DependencyInjection\Security\Factory;
 
-use Chebur\LoginFormBundle\Security\Form\LoginFormRegistry;
+use Chebur\LoginFormBundle\Security\Form\LoginFormFactory;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\FormLoginFactory as BaseFormLoginFactory;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\Form\Form;
 
 class FormLoginFactory extends BaseFormLoginFactory
 {
@@ -65,7 +64,7 @@ class FormLoginFactory extends BaseFormLoginFactory
 
         $this->addContainerParameters($container, $config, $id);
 
-        $this->createLoginForm($container, $config, $id, $listenerId);
+        $this->addLoginFormFactoryToListener($container, $config, $id, $listenerId);
 
         return array($authProviderId, $listenerId, $entryPointId);
     }
@@ -95,36 +94,17 @@ class FormLoginFactory extends BaseFormLoginFactory
      * @param array            $config
      * @param string           $firewallName
      * @param string           $listenerId
-     * @return string
      */
-    protected function createLoginForm(ContainerBuilder $container, array $config, $firewallName, $listenerId)
+    protected function addLoginFormFactoryToListener(ContainerBuilder $container, array $config, $firewallName, $listenerId)
     {
-        $loginFromId = 'chebur.login_form.security.form.' . $firewallName;
-        $container->setDefinition($loginFromId, new Definition(Form::class))
-            ->setFactory(array(
-                new Reference('form.factory'),
-                'create'
-            ))
-            ->addArgument($config['form'])
-        ;
-
-        //Добавляем форму к listener
-        $container->getDefinition($listenerId)->addArgument(new Reference($loginFromId));
-
-        //Добавим в реестр форм
-        $loginFormRegistryId = 'chebur.login_form.form.registry';
-        if (!$container->hasDefinition($loginFormRegistryId)) {
-            $def = $container->setDefinition('chebur.login_form.form.registry', new Definition(LoginFormRegistry::class));
-        } else {
-            $def = $container->getDefinition($loginFormRegistryId);
+        $loginFormFactoryId = 'chebur.login_form.form.factory';
+        if (!$container->hasDefinition($loginFormFactoryId)) {
+            //создаем если таковой ещё нет
+            $def = $container->setDefinition($loginFormFactoryId, new Definition(LoginFormFactory::class));
+            $def->addArgument(new Reference('form.factory'));
         }
-        $def->addMethodCall('add', array(
-            new Reference($loginFromId),
-            $firewallName,
-        ));
 
-
-        return $loginFromId;
+        $container->getDefinition($listenerId)->addArgument(new Reference($loginFormFactoryId));
     }
 
     /**
