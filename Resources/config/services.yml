@@ -10,6 +10,7 @@ services:
         abstract: true
 
     chebur.login_form.form.helper:
+        public: true
         class: '%chebur.login_form.form.helper.class%'
         arguments:
             - '@security.authentication_utils'
