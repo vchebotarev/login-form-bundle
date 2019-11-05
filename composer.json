@@ -1,13 +1,12 @@
 {
     "name":        "chebur/login-form-bundle",
     "type":        "symfony-bundle",
-    "description": "Symfony 2-3 advanced login form bundle",
+    "description": "Symfony advanced login form bundle",
     "keywords": [
-        "login form",
+        "login",
+        "form",
         "security",
         "symfony",
-        "symfony2",
-        "symfony3",
         "bundle"
     ],
     "homepage": "https://github.com/vchebotarev",
