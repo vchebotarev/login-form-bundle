@@ -14,4 +14,4 @@ services:
         class: '%chebur.login_form.form.helper.class%'
         arguments:
             - '@security.authentication_utils'
-            - '@translator'
+            - '@?translator'

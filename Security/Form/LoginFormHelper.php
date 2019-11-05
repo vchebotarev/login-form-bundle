@@ -26,7 +26,7 @@ class LoginFormHelper
     protected $loginFormFactory;
 
     /**
-     * @var TranslatorInterface
+     * @var TranslatorInterface|null
      */
     protected $translator;
 
@@ -36,15 +36,15 @@ class LoginFormHelper
     protected $loginFormConfig;
 
     /**
-     * @param AuthenticationUtils   $authUtils
-     * @param TranslatorInterface   $translator
-     * @param LoginFormFactory|null $loginFormFactory
-     * @param array|null            $config
+     * @param AuthenticationUtils      $authUtils
+     * @param TranslatorInterface|null $translator
+     * @param LoginFormFactory|null    $loginFormFactory
+     * @param array|null               $config
      */
     public function __construct(
         AuthenticationUtils $authUtils,
-        TranslatorInterface $translator,
-        LoginFormFactory $loginFormFactory = null,
+        ?TranslatorInterface $translator = null,
+        ?LoginFormFactory $loginFormFactory = null,
         array $config = null
     ) {
         $this->authUtils  = $authUtils;
@@ -120,7 +120,12 @@ class LoginFormHelper
      */
     protected function createFormError(AuthenticationException $exception, $firewallName)
     {
-        return new FormError($this->translator->trans($exception->getMessageKey(), $exception->getMessageData(), 'security'));
+        if ($this->translator !== null) {
+            $message = $this->translator->trans($exception->getMessageKey(), $exception->getMessageData(), 'security');
+        } else {
+            $message = $exception->getMessageKey();
+        }
+        return new FormError($message);
     }
 
     /**

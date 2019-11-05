@@ -26,5 +26,8 @@
     },
     "autoload": {
         "psr-4": { "Chebur\\LoginFormBundle\\": "" }
+    },
+    "suggest": {
+        "symfony/translation": "To translate form errors"
     }
 }
