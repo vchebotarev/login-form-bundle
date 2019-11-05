@@ -22,17 +22,11 @@ class FormLoginFactory extends BaseFormLoginFactory
         unset($this->options['csrf_token_generator']);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getKey()
     {
         return 'chebur-form-login';
     }
 
-    /**
-     * @inheritdoc
-     */
     public function addConfiguration(NodeDefinition $node)
     {
         parent::addConfiguration($node);
@@ -52,9 +46,6 @@ class FormLoginFactory extends BaseFormLoginFactory
         ;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function create(ContainerBuilder $container, $id, $config, $userProviderId, $defaultEntryPointId)
     {
         list($authProviderId, $listenerId, $entryPointId) =  parent::create($container, $id, $config, $userProviderId, $defaultEntryPointId);
@@ -66,9 +57,6 @@ class FormLoginFactory extends BaseFormLoginFactory
         return array($authProviderId, $listenerId, $entryPointId);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getListenerId()
     {
         return 'chebur.login_form.authentication.listener';
@@ -109,5 +97,4 @@ class FormLoginFactory extends BaseFormLoginFactory
 
         $container->setParameter($paramName, $val);
     }
-
 }

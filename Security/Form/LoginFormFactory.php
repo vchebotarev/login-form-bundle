@@ -17,10 +17,6 @@ class LoginFormFactory
      */
     protected $config;
 
-    /**
-     * @param FormFactory $formFactory
-     * @param array       $config
-     */
     public function __construct(FormFactory $formFactory, array $config)
     {
         $this->formFactory = $formFactory;
@@ -41,5 +37,4 @@ class LoginFormFactory
 
         return $this->formFactory->create($firewallConfig['form']);
     }
-
 }

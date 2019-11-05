@@ -8,9 +8,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class LoginFormHelperCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         //todo сделать практически все здесь, оставив в фабрике минимум
@@ -26,5 +23,4 @@ class LoginFormHelperCompilerPass implements CompilerPassInterface
             $container->getDefinition('chebur.login_form.form.factory')->addArgument($config);
         }
     }
-
 }

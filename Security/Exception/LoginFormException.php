@@ -42,9 +42,6 @@ class LoginFormException extends AuthenticationException
         return $this->formErrors;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function serialize()
     {
         return serialize(array(
@@ -53,21 +50,14 @@ class LoginFormException extends AuthenticationException
         ));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function unserialize($str)
     {
         list($this->formErrors, $parentData) = unserialize($str);
         parent::unserialize($parentData);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getMessageKey()
     {
         return 'Invalid credentials.';
     }
-
 }

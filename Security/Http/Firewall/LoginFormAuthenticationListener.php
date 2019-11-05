@@ -70,9 +70,6 @@ class LoginFormAuthenticationListener extends AbstractAuthenticationListener
         $this->loginFormFactory = $loginFormFactory;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function attemptAuthentication(Request $request)
     {
         $form = $this->loginFormFactory->createForm($this->providerKey);
@@ -101,5 +98,4 @@ class LoginFormAuthenticationListener extends AbstractAuthenticationListener
 
         return $this->authenticationManager->authenticate(new UsernamePasswordToken($username, $password, $this->providerKey));
     }
-
 }

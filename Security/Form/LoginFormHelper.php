@@ -35,17 +35,11 @@ class LoginFormHelper
      */
     protected $loginFormConfig;
 
-    /**
-     * @param AuthenticationUtils      $authUtils
-     * @param TranslatorInterface|null $translator
-     * @param LoginFormFactory|null    $loginFormFactory
-     * @param array|null               $config
-     */
     public function __construct(
         AuthenticationUtils $authUtils,
         ?TranslatorInterface $translator = null,
         ?LoginFormFactory $loginFormFactory = null,
-        array $config = null
+        ?array $config = null
     ) {
         $this->authUtils  = $authUtils;
         $this->translator = $translator;
@@ -128,10 +122,6 @@ class LoginFormHelper
         return new FormError($message);
     }
 
-    /**
-     * @param FormInterface      $form
-     * @param LoginFormException $exception
-     */
     protected function setLoginFormErrors(FormInterface $form, LoginFormException $exception)
     {
         $setter = function (FormInterface $form, $errors) use (&$setter) {
@@ -159,5 +149,4 @@ class LoginFormHelper
             $form->get($usernameParameter)->setData($username);
         }
     }
-
 }
